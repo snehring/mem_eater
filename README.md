@@ -2,7 +2,7 @@
 A simple program to use all memory on a system.
 
 ##Why?
-There is a machine at my place of work with a very large amount of memory in it. This machine seems to get angry when all of that memory is actually used.
+There is a machine at my place of work with a very large amount of memory. This machine seems to get angry when all of that memory is actually used.
 This program exists to test this behavior.
 
 ##Future Plans
