@@ -13,16 +13,13 @@
 #include <pthread.h>
 #include "mem_eater.h"
 
-
 static ulong total_mem = 0;
 static long total_procs;
 static pthread_t* threads;
 
-
 void mem_stuff(void* mem, char d);
 void read_mem(void* mem, ulong size);
 void* thread_memwrite(void* arg);
-
 
 int main(int argc, char** argv)
 {
@@ -33,12 +30,13 @@ int main(int argc, char** argv)
 	sysinfo(info);
 	total_mem = (ulong) info->totalram;
 	free(info);
-	printf("This system has %lu bytes of memory.\n",total_mem);
+	printf("This system has %lu bytes of memory.\n", total_mem);
 	printf("We will now attempt to allocate ALL OF IT!!!!!!!!\n");
-	void* mems = malloc(sizeof(char)*total_mem);
-	if(mems)
+	void* mems = malloc(sizeof(char) * total_mem);
+	if (mems)
 	{
-		printf("We've successfully managed to allocate ALL OF THE MEMORY! Let's do stuff with it!\n");
+		printf(
+				"We've successfully managed to allocate ALL OF THE MEMORY! Let's do stuff with it!\n");
 		printf("Initializing the memory...\n");
 		mem_stuff((char*) mems, 'f');
 		printf("The memory should be initialized now.\n");
@@ -58,47 +56,46 @@ int main(int argc, char** argv)
 void mem_stuff(void* mem, char d)
 {
 	ulong i;
-	ulong j;
+	ulong j = 0;
 	ulong sub = total_mem / total_procs;
-	uint rem = total_mem%total_procs;
+	uint rem = total_mem % total_procs;
 
-	j=0;
-	for(i = 0; i < total_procs; i++)
+	for (i = 0; i < total_procs; i++)
 	{
 		mwrite_args_t * arg = (mwrite_args_t*) malloc(sizeof(mwrite_args_t));
-		arg->memory=mem;
-		arg->data=d;
+		arg->memory = mem;
+		arg->data = d;
 		arg->offset = j;
 		arg->size = sub;
-		if(i+1==total_procs && rem)
+		if (i + 1 == total_procs && rem)
 		{
-			if(j+sub+rem <= total_mem)
-				arg->size=sub+rem;
+			if (j + sub + rem <= total_mem)
+				arg->size = sub + rem;
 			else
 				arg->size = rem;
 		}
 		/*
 		 * Dispatch some threads
 		 */
-		pthread_create(&threads[i],NULL, thread_memwrite, arg);
-		j=j+sub;
+		pthread_create(&threads[i], NULL, thread_memwrite, arg);
+		j = j + sub;
 	}
-	for(i = 0; i < total_procs; i++)
+	for (i = 0; i < total_procs; i++)
 	{
-		pthread_join(threads[i],NULL);
+		pthread_join(threads[i], NULL);
 	}
-
 
 }
 void* thread_memwrite(void* arg)
 {
 	ulong i;
-	for(i = 0; i < ((mwrite_args_t*)arg)->size; i++)
+	for (i = 0; i < ((mwrite_args_t*) arg)->size; i++)
 	{
 		/**
 		 * Copy data to memory location specified in arg size times
 		 */
-		*((((mwrite_args_t*)arg)->memory)+(((mwrite_args_t*)arg)->offset)+i)=((mwrite_args_t*)arg)->data;
+		*((((mwrite_args_t*) arg)->memory) + (((mwrite_args_t*) arg)->offset)
+				+ i) = ((mwrite_args_t*) arg)->data;
 
 	}
 	pthread_exit(NULL);
@@ -107,10 +104,9 @@ void read_mem(void* mem, ulong size)
 {
 	ulong i;
 	char fah;
-	for( i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
-		fah = *(((char *)mem)+i);
+		fah = *(((char *) mem) + i);
 	}
 }
-
 
