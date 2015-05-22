@@ -19,28 +19,19 @@ static long total_procs;
 static pthread_t* threads;
 
 
-void mem_stuff(char* mem, char d);
-void* thread_memwrite(void* arg)
-{
-	ulong i;
-	for(i = 0; i < ((mwrite_args_t*)arg)->size; i++)
-	{
-		*((((mwrite_args_t*)arg)->memory)+(((mwrite_args_t*)arg)->offset)+i)=((mwrite_args_t*)arg)->data;
-
-	}
-	pthread_exit(NULL);
-}
+void mem_stuff(void* mem, char d);
+void read_mem(void* mem, ulong size);
+void* thread_memwrite(void* arg);
 
 
 int main(int argc, char** argv)
 {
 	total_procs = sysconf(_SC_NPROCESSORS_ONLN);
-	//total_procs = 2;
+	total_procs = 2;
 	threads = malloc(sizeof(pthread_t) * total_procs);
 	sysinfo_t* info = malloc(sizeof(sysinfo_t));
 	sysinfo(info);
-	//total_mem = (ulong) info->totalram;
-	total_mem = 33567010816;
+	total_mem = (ulong) info->totalram;
 	free(info);
 	printf("This system has %lu bytes of memory.\n",total_mem);
 	printf("We will now attempt to allocate ALL OF IT!!!!!!!!\n");
@@ -51,6 +42,9 @@ int main(int argc, char** argv)
 		printf("Initializing the memory...\n");
 		mem_stuff((char*) mems, 'f');
 		printf("The memory should be initialized now.\n");
+		printf("Pointelessly reading memory...\n");
+		printf("Sleeping for a bit to let things calm down.\n");
+		sleep(60);
 	}
 	else
 	{
@@ -61,7 +55,7 @@ int main(int argc, char** argv)
 	return EXIT_SUCCESS;
 }
 
-void mem_stuff(char* mem, char d)
+void mem_stuff(void* mem, char d)
 {
 	ulong i;
 	ulong j;
@@ -83,7 +77,9 @@ void mem_stuff(char* mem, char d)
 			else
 				arg->size = rem;
 		}
-
+		/*
+		 * Dispatch some threads
+		 */
 		pthread_create(&threads[i],NULL, thread_memwrite, arg);
 		j=j+sub;
 	}
@@ -93,6 +89,28 @@ void mem_stuff(char* mem, char d)
 	}
 
 
+}
+void* thread_memwrite(void* arg)
+{
+	ulong i;
+	for(i = 0; i < ((mwrite_args_t*)arg)->size; i++)
+	{
+		/**
+		 * Copy data to memory location specified in arg size times
+		 */
+		*((((mwrite_args_t*)arg)->memory)+(((mwrite_args_t*)arg)->offset)+i)=((mwrite_args_t*)arg)->data;
+
+	}
+	pthread_exit(NULL);
+}
+void read_mem(void* mem, ulong size)
+{
+	ulong i;
+	char fah;
+	for( i = 0; i < size; i++)
+	{
+		fah = *(((char *)mem)+i);
+	}
 }
 
 
