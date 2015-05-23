@@ -24,7 +24,6 @@ void* thread_memwrite(void* arg);
 int main(int argc, char** argv)
 {
 	total_procs = sysconf(_SC_NPROCESSORS_ONLN);
-	total_procs = 2;
 	threads = malloc(sizeof(pthread_t) * total_procs);
 	sysinfo_t* info = malloc(sizeof(sysinfo_t));
 	sysinfo(info);
