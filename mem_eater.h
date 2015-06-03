@@ -21,3 +21,7 @@ typedef struct mwrite_args
 	ulong size;
 
 } mwrite_args_t;
+
+void mem_stuff(void* mem, char d);
+void read_mem(void* mem, ulong size);
+void* thread_memwrite(void* arg);

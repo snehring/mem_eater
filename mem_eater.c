@@ -17,9 +17,6 @@ static ulong total_mem = 0;
 static long total_procs;
 static pthread_t* threads;
 
-void mem_stuff(void* mem, char d);
-void read_mem(void* mem, ulong size);
-void* thread_memwrite(void* arg);
 
 int main(int argc, char** argv)
 {
