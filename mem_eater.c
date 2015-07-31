@@ -37,6 +37,7 @@ int main(int argc, char** argv)
 		mem_stuff((char*) mems, 'f');
 		printf("The memory should be initialized now.\n");
 		printf("Pointlessly reading memory...\n");
+		read_mem(mems, total_mem);
 		printf("Sleeping for a bit to let things calm down.\n");
 		sleep(60);
 	}
