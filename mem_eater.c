@@ -21,6 +21,11 @@ static pthread_t* threads;
 int main(int argc, char** argv)
 {
 	total_procs = sysconf(_SC_NPROCESSORS_ONLN);
+	if((total_procs = total_procs/4)==0)
+	{
+		total_procs = 1;
+	}
+		
 	threads = malloc(sizeof(pthread_t) * total_procs);
 	sysinfo_t* info = malloc(sizeof(sysinfo_t));
 	sysinfo(info);
