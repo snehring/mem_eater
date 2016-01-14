@@ -13,8 +13,8 @@
 #include <pthread.h>
 #include "mem_eater.h"
 
-static ulong total_mem = 0;
-static long total_procs;
+static uint64_t total_mem = 0;
+static uint32_t total_procs;
 static pthread_t* threads;
 
 
@@ -33,18 +33,19 @@ int main(int argc, char** argv)
 	free(info);
 	printf("This system has %lu bytes of memory.\n", total_mem);
 	printf("We will now attempt to allocate ALL OF IT!!!!!!!!\n");
-	void* mems = malloc(sizeof(char) * total_mem);
+	void* mems = malloc(sizeof(uint8_t) * total_mem);
 	if (mems)
 	{
 		printf(
 				"We've successfully managed to allocate ALL OF THE MEMORY! Let's do stuff with it!\n");
 		printf("Initializing the memory...\n");
-		mem_stuff((char*) mems, 'f');
+		mem_stuff((uint8_t*) mems, 'f');
 		printf("The memory should be initialized now.\n");
 		printf("Pointlessly reading memory...\n");
 		read_mem(mems, total_mem);
 		printf("Sleeping for a bit to let things calm down.\n");
-		sleep(60);
+		sleep(1);
+		printf("We're done here.\n");
 	}
 	else
 	{
@@ -55,14 +56,13 @@ int main(int argc, char** argv)
 	return EXIT_SUCCESS;
 }
 
-void mem_stuff(void* mem, char d)
+void mem_stuff(void* mem, uint8_t d)
 {
-	ulong i;
-	ulong j = 0;
-	ulong sub = total_mem / total_procs;
-	uint rem = total_mem % total_procs;
+	uint64_t j = 0;
+	uint64_t sub = total_mem / total_procs;
+	uint32_t rem = total_mem % total_procs;
 
-	for (i = 0; i < total_procs; i++)
+	for (uint64_t i = 0; i < total_procs; i++)
 	{
 		mwrite_args_t * arg = (mwrite_args_t*) malloc(sizeof(mwrite_args_t));
 		arg->memory = mem;
@@ -82,7 +82,7 @@ void mem_stuff(void* mem, char d)
 		pthread_create(&threads[i], NULL, thread_memwrite, arg);
 		j = j + sub;
 	}
-	for (i = 0; i < total_procs; i++)
+	for (uint64_t i = 0; i < total_procs; i++)
 	{
 		pthread_join(threads[i], NULL);
 	}
@@ -90,8 +90,7 @@ void mem_stuff(void* mem, char d)
 }
 void* thread_memwrite(void* arg)
 {
-	ulong i;
-	for (i = 0; i < ((mwrite_args_t*) arg)->size; i++)
+	for (uintptr_t i = 0; i < ((mwrite_args_t*) arg)->size; i++)
 	{
 		/**
 		 * Copy data to memory location specified in arg size times
@@ -102,13 +101,13 @@ void* thread_memwrite(void* arg)
 	}
 	pthread_exit(NULL);
 }
-void read_mem(void* mem, ulong size)
+void read_mem(void* mem, uint64_t size)
 {
-	ulong i;
-	char fah;
+	uint64_t i;
+	uint8_t fah;
 	for (i = 0; i < size; i++)
 	{
-		fah = *(((char *) mem) + i);
+		fah = *(((uint8_t *) mem) + i);
 	}
 }
 
