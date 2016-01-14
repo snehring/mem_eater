@@ -45,6 +45,8 @@ int main(int argc, char** argv)
 		read_mem(mems, total_mem);
 		printf("Sleeping for a bit to let things calm down.\n");
 		sleep(1);
+		/*Explicitly calling free here, because I can.*/
+		free(mems);
 		printf("We're done here.\n");
 	}
 	else
