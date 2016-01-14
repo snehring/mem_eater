@@ -4,13 +4,8 @@
  *  Created on: May 22, 2015
  *      Author: snehring
  */
-
-#ifndef MEM_EATER_H_
-#define MEM_EATER_H_
+#pragma once
 #include <stdint.h>
-
-
-#endif /* MEM_EATER_H_ */
 
 typedef struct sysinfo sysinfo_t;
 typedef struct mwrite_args
