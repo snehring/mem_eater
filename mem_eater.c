@@ -26,8 +26,8 @@ int main(int argc, char** argv)
 		total_procs = 1;
 	}
 		
-	threads = malloc(sizeof(pthread_t) * total_procs);
-	sysinfo_t* info = malloc(sizeof(sysinfo_t));
+	threads = calloc(total_procs,sizeof(pthread_t));
+	sysinfo_t* info = calloc(1,sizeof(sysinfo_t));
 	sysinfo(info);
 	total_mem = (uint64_t) info->totalram;
 	free(info);
@@ -78,7 +78,7 @@ void mem_stuff(void* mem, uint8_t* d)
 
 	for (uint64_t i = 0; i < total_procs; i++)
 	{
-		mwrite_args_t * arg = (mwrite_args_t*) malloc(sizeof(mwrite_args_t));
+		mwrite_args_t * arg = (mwrite_args_t*) calloc(1,sizeof(mwrite_args_t));
 		arg->memory = mem;
 		arg->data = d;
 		arg->offset = j;
