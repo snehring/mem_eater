@@ -21,6 +21,10 @@ static pthread_t* threads;
 int main(int argc, char** argv)
 {
 	total_procs = sysconf(_SC_NPROCESSORS_ONLN);
+	/** Using all available threads is actually not that fast due to memory bandwidth issues (I suspect anyway, it may
+ * 	be some other hardware reason). Instead, try to use a quarter of all available proccessors (chosen mostly arbitrarily)
+ * 	Use 1 if we don't have at least 4. 
+ * 	**/
 	if((total_procs = total_procs/4)==0)
 	{
 		total_procs = 1;
@@ -41,7 +45,7 @@ int main(int argc, char** argv)
 		uint8_t*  data;
 		if(validate_input(argc,argv))
 		{
-		
+			//TODO
 		}
 		else
 		{
@@ -66,7 +70,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "Failed to allocate memory. We're done here.");
 		return EXIT_FAILURE;
 	}
-
+	free(threads);
 	return EXIT_SUCCESS;
 }
 
@@ -132,6 +136,8 @@ void* thread_memwrite(void* arg)
 		}
 
 	}
+	/** Should keep track of these in the function that dispatches the threads and free there **/
+	free(arg);
 	pthread_exit(NULL);
 }
 void read_mem(void* mem, uint64_t size)
