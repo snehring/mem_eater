@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	total_mem = (uint64_t) info->totalram;
 	free(info);
 	printf("This system has %lu bytes of memory.\n", total_mem);
-	printf("We will now attempt to allocate ALL OF IT!!!!!!!!\n");
+	printf("We will now attempt to allocate ALL OF IT!\n");
 	void* mems = malloc(sizeof(uint8_t) * total_mem);
 	if (mems)
 	{
@@ -78,7 +78,7 @@ void mem_stuff(void* mem, uint8_t* d)
 {
 	uint64_t j = 0;
 	uint64_t sub = total_mem / total_procs;
-	uint32_t rem = total_mem % total_procs;
+	uint64_t rem = total_mem % total_procs;
 
 	for (uint64_t i = 0; i < total_procs; i++)
 	{
@@ -142,14 +142,13 @@ void* thread_memwrite(void* arg)
 }
 void read_mem(void* mem, uint64_t size)
 {
-	uint64_t i;
 	uint8_t fah;
-	for (i = 0; i < size; i++)
+	for (uint64_t i = 0; i < size; i++)
 	{
 		fah = *(((uint8_t *) mem) + i);
 	}
 }
-bool validate_input(int argc, char** argv)
+bool validate_input(uint32_t argc, uint8_t** argv)
 {
 	//TODO
 	return false;
